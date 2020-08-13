@@ -1,0 +1,13 @@
+*.map
+CMakeFiles/
+CMakeCache.txt
+Makefile
+cmake_install.cmake
+*.axf
+*.bin
+*.results
+.cccc
+*.md
+*.csv
+LibModbusTestMaster.cpp
+PyModbusTestMaster.py
