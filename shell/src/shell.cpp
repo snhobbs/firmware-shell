@@ -14,6 +14,18 @@
     command < &g_shell_commands[g_num_shell_commands]; \
     ++command)
 
+namespace Shell {
+bool echo = true;
+}
+
+bool shell_get_echo(void) {
+  return Shell::echo;
+}
+
+void shell_set_echo(const bool mode) {
+  Shell::echo = mode;
+}
+
 static struct ShellContext {
   int (*send_char)(char c);
   size_t rx_size;
@@ -40,7 +52,9 @@ static void prv_echo(char c) {
     prv_send_char(' ');
     prv_send_char('\b');
   } else {
-    prv_send_char(c);
+    if (shell_get_echo()) {
+      prv_send_char(c);
+    }
   }
 }
 
@@ -57,7 +71,7 @@ static void prv_reset_rx_buffer(void) {
   s_shell.rx_size = 0;
 }
 
-static void prv_echo_str(const char *str) {
+void prv_echo_str(const char *str) {
   for (const char *c = str; *c != '\0'; ++c) {
     prv_echo(*c);
   }

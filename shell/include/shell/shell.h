@@ -25,5 +25,12 @@ void shell_receive_char(char c);
 //! Print help command
 int shell_help_handler(int argc, char *argv[]);
 
+//! Writes string to output
+void prv_echo_str(const char *str);
+
 //! Prints a line then a newline
 void shell_put_line(const char *str);
+
+
+void shell_set_echo(const bool);
+

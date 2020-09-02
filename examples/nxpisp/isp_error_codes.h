@@ -1,3 +1,4 @@
+#pragma once
 #include <array>
 namespace Isp {
 const constexpr std::array<const char*, 32> return_codes{

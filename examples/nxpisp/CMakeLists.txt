@@ -3,7 +3,7 @@ project(nxpisp LANGUAGES CXX C)
 
 set(PROJECT_SOURCE ../../shell/src)
 set(PROJECT_INCLUDE ../../shell/include)
-add_executable(nxpisp main.cpp shell_commands.cpp ${PROJECT_SOURCE}/shell.c)
+add_executable(nxpisp main.cpp shell_commands.cpp ${PROJECT_SOURCE}/shell.cpp)
 SET_SOURCE_FILES_PROPERTIES(${PROJECT_SOURCE}/shell.c PROPERTIES LANGUAGE CXX)
 SET_SOURCE_FILES_PROPERTIES(shell_commands.cpp PROPERTIES LANGUAGE CXX )
 SET_SOURCE_FILES_PROPERTIES(main.cpp PROPERTIES LANGUAGE CXX )
