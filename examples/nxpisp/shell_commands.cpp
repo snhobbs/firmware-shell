@@ -1,7 +1,6 @@
 #include "isp_error_codes.h"
 #include "shell/shell.h"
 #include "isp.h"
-#include "chip_info.h"
 
 #include <limits>
 #include <cstdint>
@@ -92,6 +91,8 @@ int cmd_echo(int argc, char *argv[]) {
     return -1;
   }
   shell_set_echo(std::atoi(argv[1]) != 0);
+  const uint32_t response_code = Isp::CMD_SUCCESS;
+  SendResponseCode(response_code);
   return 0;
 }
 

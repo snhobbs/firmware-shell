@@ -1,6 +1,6 @@
-
 #include "shell/shell.h"
 
+#include "cstdio"
 #include <stdbool.h>
 #include <stddef.h>
 #include <string.h>
@@ -52,9 +52,7 @@ static void prv_echo(char c) {
     prv_send_char(' ');
     prv_send_char('\b');
   } else {
-    if (shell_get_echo()) {
-      prv_send_char(c);
-    }
+    prv_send_char(c);
   }
 }
 
@@ -141,7 +139,10 @@ void shell_receive_char(char c) {
   if (c == '\r' || prv_is_rx_buffer_full() || !prv_booted()) {
     return;
   }
-  prv_echo(c);
+
+  if (shell_get_echo()) {
+    prv_echo(c);
+  }
 
   if (c == '\b') {
     s_shell.rx_buffer[--s_shell.rx_size] = '\0';
