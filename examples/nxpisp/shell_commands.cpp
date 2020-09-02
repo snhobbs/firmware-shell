@@ -1,48 +1,47 @@
+#include "isp_error_codes.h"
 #include "shell/shell.h"
 
 #include <cstdint>
-#include <stddef.h>
-#include <stdio.h>
-#include <stdbool.h>
-#include <string.h>
+#include <cstddef>
+#include <cstdio>
+#include <cstring>
 
 #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(arr[0]))
 
-bool kv_store_write(const char *key, const void *val, uint32_t len) {
-  // Stub
+static inline bool CheckArgLength(const int argc, const int length_low, const int length_high) {
+  if (argc <= length_low) {
+    shell_put_line("> FAIL,too few arguments,1");
+    return false;
+  } else if (argc > length_high + 1) {
+    shell_put_line("> FAIL,too many arguments,1");
+    return false;
+  }
   return true;
 }
 
-int cli_cmd_kv_write(int argc, char *argv[]) {
-  // We expect 3 arguments:
-  // 1. Command name
-  // 2. Key
-  // 3. Value
-  if (argc != 3) {
-    shell_put_line("> FAIL,1");
-    return;
-  }
-
-  const char *key = argv[1];
-  const char *value = argv[2];
-
-  bool result = kv_store_write(key, value, strlen(value));
-  if (!result) {
-    shell_put_line("> FAIL,2");
-    return;
-  }
-  shell_put_line("> OK");
+namespace cli {
+int cmd_syncronize(int argc, char *argv[]) {
+  shell_put_line("syncronized");
   return 0;
 }
 
-int cli_cmd_hello(int argc, char *argv[]) {
-  shell_put_line("Hello World!");
+int cmd_printerror(int argc, char *argv[]) {
+  if (!CheckArgLength(argc, 1, 1)) {
+    return 0;
+  }
+  const int code = std::atoi(argv[1]);
+  if (code < Isp::return_codes.size() && code > 0) {
+    shell_put_line(Isp::return_codes[code]);
+  } else {
+    shell_put_line("> FAIL,Unknown code,2");
+  }
   return 0;
 }
+}  //  namespace cli
 
 static const sShellCommand s_shell_commands[] = {
-  {"kv_write", cli_cmd_kv_write, "Write a Key/Value pair"},
-  {"hello", cli_cmd_hello, "Say hello"},
+  {"?", cli::cmd_syncronize, "Required for compatability with NXP ISP loader"},
+  {"lookup_error", cli::cmd_printerror, "Print name of error code"},
   {"help", shell_help_handler, "Lists all commands"},
 };
 
