@@ -29,7 +29,7 @@ void shell_set_echo(const bool mode) {
 static struct ShellContext {
   int (*send_char)(char c);
   size_t rx_size;
-  char rx_buffer[SHELL_RX_BUFFER_SIZE];
+  std::array<char, SHELL_RX_BUFFER_SIZE> rx_buffer{'\0'};
 } s_shell;
 
 static bool prv_booted(void) {
@@ -57,15 +57,21 @@ static void prv_echo(char c) {
 }
 
 static char prv_last_char(void) {
-  return s_shell.rx_buffer[s_shell.rx_size - 1];
+  return s_shell.rx_buffer[s_shell.rx_size == 0 ? 0 : s_shell.rx_size - 1];
 }
 
 static bool prv_is_rx_buffer_full(void) {
-  return s_shell.rx_size >= SHELL_RX_BUFFER_SIZE;
+  return s_shell.rx_size >= s_shell.rx_size.size();
+}
+
+static bool prv_is_rx_buffer_empty(void) {
+  return s_shell.rx_size <= 0;
 }
 
 static void prv_reset_rx_buffer(void) {
-  memset(s_shell.rx_buffer, 0, sizeof(s_shell.rx_buffer));
+  for (char& ch : s_shell) {
+    ch = '\0';
+  }
   s_shell.rx_size = 0;
 }
 
@@ -144,12 +150,12 @@ void shell_receive_char(char c) {
     prv_echo(c);
   }
 
-  if (c == '\b') {
-    s_shell.rx_buffer[--s_shell.rx_size] = '\0';
+  if (c == '\b' && !prv_is_rx_buffer_empty()) {
+    s_shell.rx_buffer.at(--s_shell.rx_size) = '\0';
     return;
   }
 
-  s_shell.rx_buffer[s_shell.rx_size++] = c;
+  s_shell.rx_buffer.at(s_shell.rx_size++) = c;
 
   prv_process();
 }
