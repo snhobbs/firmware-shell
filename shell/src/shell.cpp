@@ -1,11 +1,11 @@
 #include "shell/shell.h"
 
-#include "cstdio"
+//#include <cstdio>
 #include <stdbool.h>
 #include <stddef.h>
 #include <string.h>
 
-#define SHELL_RX_BUFFER_SIZE (256)
+#define SHELL_RX_BUFFER_SIZE (1024)
 #define SHELL_MAX_ARGS (16)
 #define SHELL_PROMPT "shell> "
 
