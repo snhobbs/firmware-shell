@@ -1,11 +1,12 @@
 #include "shell/shell.h"
 
-//#include <cstdio>
+#include <cstdio>
 #include <stdbool.h>
 #include <stddef.h>
 #include <string.h>
+#include <array>
 
-#define SHELL_RX_BUFFER_SIZE (1024)
+#define SHELL_RX_BUFFER_SIZE (256)
 #define SHELL_MAX_ARGS (16)
 #define SHELL_PROMPT "shell> "
 
@@ -61,7 +62,7 @@ static char prv_last_char(void) {
 }
 
 static bool prv_is_rx_buffer_full(void) {
-  return s_shell.rx_size >= s_shell.rx_size.size();
+  return s_shell.rx_size >= s_shell.rx_buffer.size();
 }
 
 static bool prv_is_rx_buffer_empty(void) {
@@ -69,7 +70,7 @@ static bool prv_is_rx_buffer_empty(void) {
 }
 
 static void prv_reset_rx_buffer(void) {
-  for (char& ch : s_shell) {
+  for (char& ch : s_shell.rx_buffer) {
     ch = '\0';
   }
   s_shell.rx_size = 0;
