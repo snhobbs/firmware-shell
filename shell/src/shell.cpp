@@ -44,7 +44,7 @@ static void prv_send_char(char c) {
   s_shell.send_char(c);
 }
 
-static void prv_echo(char c) {
+void prv_echo(char c) {
   if ('\n' == c) {
     prv_send_char('\r');
     prv_send_char('\n');
@@ -70,9 +70,8 @@ static bool prv_is_rx_buffer_empty(void) {
 }
 
 static void prv_reset_rx_buffer(void) {
-  for (char& ch : s_shell.rx_buffer) {
-    ch = '\0';
-  }
+  s_shell.rx_buffer[0] = '\0';
+  s_shell.rx_buffer[1] = '\0';
   s_shell.rx_size = 0;
 }
 
@@ -152,11 +151,11 @@ void shell_receive_char(char c) {
   }
 
   if (c == '\b' && !prv_is_rx_buffer_empty()) {
-    s_shell.rx_buffer.at(--s_shell.rx_size) = '\0';
+    s_shell.rx_buffer[--s_shell.rx_size] = '\0';
     return;
   }
 
-  s_shell.rx_buffer.at(s_shell.rx_size++) = c;
+  s_shell.rx_buffer[s_shell.rx_size++] = c;
 
   prv_process();
 }

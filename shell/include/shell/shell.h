@@ -33,4 +33,5 @@ void shell_put_line(const char *str);
 
 
 void shell_set_echo(const bool);
+void prv_echo(char c);
 
