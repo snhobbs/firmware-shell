@@ -10,7 +10,9 @@
 #define SHELL_RX_BUFFER_SIZE (256)
 #endif
 
-#ifndef SHELL_PROMPT
+#ifdef NO_SHELL_PROMPT
+#define SHELL_PROMPT ""
+#else
 #define SHELL_PROMPT "shell> "
 #endif
 
@@ -25,7 +27,7 @@
     ++command)
 
 namespace Shell {
-bool echo = true;
+bool echo = false;
 }
 
 bool shell_get_echo(void) {
