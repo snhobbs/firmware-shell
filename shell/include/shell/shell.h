@@ -6,6 +6,7 @@ typedef struct ShellCommand {
   const char *command;
   int (*handler)(int argc, char *argv[]);
   const char *help;
+  const int nargs = 0;
 } sShellCommand;
 
 extern const sShellCommand *const g_shell_commands;
@@ -14,6 +15,7 @@ extern const size_t g_num_shell_commands;
 typedef struct ShellImpl {
   //! Function to call whenever a character needs to be sent out.
   int (*send_char)(char c);
+  const char* prompt;
 } sShellImpl;
 
 //! Initializes the demo shell. To be called early at boot.

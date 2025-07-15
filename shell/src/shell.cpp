@@ -10,13 +10,19 @@
 #define SHELL_RX_BUFFER_SIZE (256)
 #endif
 
+#if 0
+#ifndef SHELL_PROMPT
 #ifdef NO_SHELL_PROMPT
 #define SHELL_PROMPT ""
 #else
 #define SHELL_PROMPT "shell> "
 #endif
+#endif
+#endif
 
+#ifndef SHELL_MAX_ARGS
 #define SHELL_MAX_ARGS (16)
+#endif
 
 //#define SHELL_RX_BUFFER_SIZE (256)
 //#define SHELL_PROMPT "shell> "
@@ -27,7 +33,7 @@
     ++command)
 
 namespace Shell {
-bool echo = false;
+static bool echo = false;
 }
 
 bool shell_get_echo(void) {
@@ -40,6 +46,7 @@ void shell_set_echo(const bool mode) {
 
 static struct ShellContext {
   int (*send_char)(char c);
+  const char* shell_prompt;
   size_t rx_size;
   std::array<char, SHELL_RX_BUFFER_SIZE> rx_buffer{'\0'};
 } s_shell;
@@ -93,7 +100,7 @@ void prv_echo_str(const char *str) {
 }
 
 static void prv_send_prompt(void) {
-  prv_echo_str(SHELL_PROMPT);
+  prv_echo_str(s_shell.shell_prompt);
 }
 
 static const sShellCommand *prv_find_command(const char *name) {
@@ -139,7 +146,11 @@ static void prv_process(void) {
       prv_echo('\n');
       prv_echo_str("Type 'help' to list all commands\n");
     } else {
-      command->handler(argc, argv);
+      if (argc <= command->nargs) {
+          prv_echo_str("1, Not enough arguments\n");
+      } else {
+    	  command->handler(argc, argv);
+      }
     }
   }
   prv_reset_rx_buffer();
@@ -148,8 +159,8 @@ static void prv_process(void) {
 
 void shell_boot(const sShellImpl *impl) {
   s_shell.send_char = impl->send_char;
+  s_shell.shell_prompt = impl->prompt;
   prv_reset_rx_buffer();
-  prv_echo_str("\n" SHELL_PROMPT);
 }
 
 void shell_receive_char(char c) {
