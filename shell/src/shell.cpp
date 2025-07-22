@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <string.h>
+#include <strings.h>
 #include <array>
 
 #ifndef SHELL_RX_BUFFER_SIZE
@@ -105,9 +106,14 @@ static void prv_send_prompt(void) {
 
 static const sShellCommand *prv_find_command(const char *name) {
   SHELL_FOR_EACH_COMMAND(command) {
+#ifdef SHELL_USE_STRCASECMP
+	if (strcasecmp(command->command, name) == 0) {
+#else
     if (strcmp(command->command, name) == 0) {
+#endif
       return command;
     }
+
   }
   return NULL;
 }
