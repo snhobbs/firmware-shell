@@ -7,6 +7,7 @@ typedef struct ShellCommand {
   int (*handler)(int argc, char *argv[]);
   const char *help;
   const int nargs = 0;
+  const char hidden = 0;
 } sShellCommand;
 
 extern const sShellCommand *const g_shell_commands;

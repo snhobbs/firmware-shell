@@ -11,13 +11,15 @@
 #define SHELL_RX_BUFFER_SIZE (256)
 #endif
 
-#if 0
+#ifndef SHELL_USE_STRCASECMP
+#define SHELL_USE_STRCASECMP 1 /* case insensitive*/
+#endif
+
 #ifndef SHELL_PROMPT
 #ifdef NO_SHELL_PROMPT
 #define SHELL_PROMPT ""
 #else
 #define SHELL_PROMPT "shell> "
-#endif
 #endif
 #endif
 
@@ -196,6 +198,9 @@ void shell_put_line(const char *str) {
 
 int shell_help_handler(int argc, char *argv[]) {
   SHELL_FOR_EACH_COMMAND(command) {
+	if (command->hidden != 0) {
+	  continue;
+	}
     prv_echo_str(command->command);
     prv_echo_str(": ");
     prv_echo_str(command->help);
